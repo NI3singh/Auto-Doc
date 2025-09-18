@@ -3,7 +3,7 @@
   "publisher": "ni3dev",
   "displayName": "Auto-Doc",
   "description": "Automatically documents code changes on save.",
-  "icon": "extension_logo.png",
+  "icon": "assets/extension_logo.png",
   "version": "1.0.0",
   "engines": {
     "vscode": "^1.104.0"
