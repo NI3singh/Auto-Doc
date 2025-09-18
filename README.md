@@ -163,6 +163,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
   
 **Made with ❤️ for developers who value their time**
 
-[Install Now](https://marketplace.visualstudio.com/items?itemName=ni3dev.auto-document) • [Documentation](https://marketplace.visualstudio.com/items?itemName=ni3dev.auto-document) • [Support](https://marketplace.visualstudio.com/items?itemName=ni3dev.auto-document)
+[Install Now](https://marketplace.visualstudio.com/items?itemName=ni3dev.auto-document) • [Documentation](https://marketplace.visualstudio.com/items?itemName=ni3dev.auto-document) • [Support](ni3.singh.r@gmail.com)
 
 </div>
