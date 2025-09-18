@@ -1,0 +1,70 @@
+{
+  "name": "auto-document",
+  "publisher": "ni3dev",
+  "displayName": "Auto-Doc",
+  "description": "Automatically documents code changes on save.",
+  "icon": "extension_logo.png",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.104.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NI3singh/Auto-Doc.git"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "auto-doc.openLogFile",
+        "title": "Auto-Doc: Open Log File"
+      },
+      {
+        "command": "auto-doc.toggleLogging",
+        "title": "Auto-Doc: Toggle Logging On/Off"
+      },
+      {
+        "command": "auto-doc.exportToPdf",
+        "title": "Auto-Doc: Export Log to PDF"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "22.x",
+    "@types/vscode": "^1.104.0",
+    "@typescript-eslint/eslint-plugin": "^8.42.0",
+    "@typescript-eslint/parser": "^8.42.0",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.34.0",
+    "ts-loader": "^9.5.4",
+    "typescript": "^5.9.2",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^6.0.1"
+  },
+  "dependencies": {
+    "@types/diff": "^7.0.2",
+    "@types/marked": "^5.0.2",
+    "diff": "^8.0.2",
+    "marked": "^16.3.0",
+    "puppeteer": "^24.22.0"
+  }
+}
