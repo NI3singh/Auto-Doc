@@ -1,6 +1,8 @@
-# <img src="assets/extension_logo.png" alt="Auto-Doc Logo" width="128" height="128"> Auto-Doc
-
-**Your personal code diary. Automatically document every change, every save, without lifting a finger.**
+<div align="center">
+  <img src="assets/extension_logo.png" alt="Auto-Doc Logo" width="128" height="128">
+  <h1>📝 Auto-Doc</h1>
+  <p><strong>Your personal code diary. Automatically document every change, every save, without lifting a finger.</strong></p>
+</div>
 
 [![VS Code Marketplace](https://img.shields.io/badge/VS%20Code-Marketplace-blue?style=for-the-badge&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=ni3dev.auto-document)
 [![Version](https://img.shields.io/visual-studio-marketplace/v/ni3dev.auto-document?style=for-the-badge&color=green)](https://marketplace.visualstudio.com/items?itemName=ni3dev.auto-document)
