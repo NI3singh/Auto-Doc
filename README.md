@@ -1,4 +1,4 @@
-# 📝 Auto-Doc
+# <img src="assets/extension_logo.png" alt="Auto-Doc Logo" width="128" height="128"> Auto-Doc
 
 **Your personal code diary. Automatically document every change, every save, without lifting a finger.**
 
