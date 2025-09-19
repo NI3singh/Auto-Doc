@@ -67,7 +67,7 @@ graph LR
     A[Code & Save] --> B[Auto-Doc Detects Changes]
     B --> C[Generate Diff]
     C --> D[Append to Log File]
-    D --> E[📄 {Project_name}_Documentation.md Updated]
+    D --> E[📄 Documentation.md Updated]
 ```
 
 ### Sample Log Entry
