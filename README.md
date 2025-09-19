@@ -32,7 +32,7 @@
 - Clean, readable diff format
 
 ### 📋 **Smart Documentation**
-- Creates `.autodoc-log.md` in your project root
+- Creates `{Project_name}_Documentation.md` in your project root
 - Newest changes appear at the top
 - Markdown format for easy viewing and sharing
 
@@ -56,7 +56,7 @@
 
 3. **Start coding!**
    - Save any file to create your first log entry
-   - Check the `.autodoc-log.md` file in your project root
+   - Check the `{Project_name}_Documentation.md` file in your project root
 
 ---
 
@@ -67,7 +67,7 @@ graph LR
     A[Code & Save] --> B[Auto-Doc Detects Changes]
     B --> C[Generate Diff]
     C --> D[Append to Log File]
-    D --> E[📄 .autodoc-log.md Updated]
+    D --> E[📄 {Project_name}_Documentation.md Updated]
 ```
 
 ### Sample Log Entry
