@@ -5,7 +5,7 @@ import puppeteer from 'puppeteer';
 
 const lastSavedFileState = new Map<string, string>();
 let autoDocStatusBarItem: vscode.StatusBarItem;
-let isLoggingEnabled = true; // <-- State variable to track logging status
+let isLoggingEnabled = true;
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('Congratulations, the extension "Auto-Doc" is now active!');
@@ -24,8 +24,8 @@ export function activate(context: vscode.ExtensionContext) {
 
     // --- COMMAND 2: Toggle Logging ---
     const toggleLoggingCommand = vscode.commands.registerCommand('auto-doc.toggleLogging', () => {
-        isLoggingEnabled = !isLoggingEnabled; // Flip the boolean
-        updateStatusBar(); // Update the icon and text
+        isLoggingEnabled = !isLoggingEnabled;
+        updateStatusBar();
         vscode.window.showInformationMessage(`Auto-Doc logging is now ${isLoggingEnabled ? 'ON' : 'OFF'}`);
     });
 
@@ -42,21 +42,17 @@ export function activate(context: vscode.ExtensionContext) {
         const pdfFileUri = vscode.Uri.joinPath(workspaceFolder.uri, `${workspaceFolder.name}_Documentation.pdf`);
 
         try {
-            // Show a progress indicator
             vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
                 title: "Auto-Doc: Generating PDF...",
                 cancellable: false
             }, async (progress) => {
-                // Read the Markdown file
                 const { marked } = await import('marked');
                 const markdownContentBytes = await vscode.workspace.fs.readFile(logFileUri);
                 const markdownContent = Buffer.from(markdownContentBytes).toString('utf-8');
 
-                // Convert Markdown to HTML
                 const htmlContent = marked.parse(markdownContent);
                 
-                // Add some basic styling to make it look good
                 const styledHtml = `
                     <!DOCTYPE html>
                     <html>
@@ -74,7 +70,6 @@ export function activate(context: vscode.ExtensionContext) {
                     </html>
                 `;
 
-                // Use Puppeteer to create the PDF
                 const browser = await puppeteer.launch();
                 const page = await browser.newPage();
                 await page.setContent(styledHtml, { waitUntil: 'networkidle0' });
@@ -91,9 +86,9 @@ export function activate(context: vscode.ExtensionContext) {
 
     // --- STATUS BAR ---
     autoDocStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-    autoDocStatusBarItem.command = 'auto-doc.toggleLogging'; // Make the status bar item clickable
+    autoDocStatusBarItem.command = 'auto-doc.toggleLogging';
     context.subscriptions.push(autoDocStatusBarItem);
-    updateStatusBar(); // Set the initial state
+    updateStatusBar();
 
     // --- EVENT LISTENERS ---
     const onDidOpen = vscode.workspace.onDidOpenTextDocument(document => {
@@ -105,7 +100,7 @@ export function activate(context: vscode.ExtensionContext) {
     const onDidSave = vscode.workspace.onDidSaveTextDocument(document => {
         if (!isLoggingEnabled) {
             return;
-        } // <-- Check if logging is enabled
+        }
 
         const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
         if (!workspaceFolder) {
@@ -127,26 +122,22 @@ export function activate(context: vscode.ExtensionContext) {
                 const changes = diff.diffLines(contentBefore, contentAfter);
                 let logEntry = '';
                 let lineNumber = 1;
+                let addedCount = 0;
+                let removedCount = 0;
 
                 changes.forEach(part => {
-                    // if (part.added || part.removed) {
-                    //     const prefix = part.added ? 'ADDED' : 'REMOVED';
-                    //     const formattedValue = part.value.split('\n').map(line => `    ${line}`).join('\n');
-                    //     logEntry += `**[${prefix}]**\n\`\`\`\n${formattedValue}\n\`\`\`\n`;
-                    // }
                     const lineCount = (part.value.match(/\n/g) || []).length;
                 
                     if (part.added) {
+                        addedCount += lineCount;
                         const lines = part.value.replace(/\n$/, '').split('\n');
-                        // Prepend the line number to each added line
                         const formattedValue = lines.map(line => `${(lineNumber++).toString().padEnd(5)} ${line}`).join('\n');
                         logEntry += `**[ADDED]**\n\`\`\`\n${formattedValue}\n\`\`\`\n`;
                     } else if (part.removed) {
-                        // For removed lines, just note where they were removed from
+                        removedCount += lineCount;
                         const formattedValue = `(from line ~${lineNumber})\n` + part.value;
                         logEntry += `**[REMOVED]**\n\`\`\`\n${formattedValue}\n\`\`\`\n`;
                     } else {
-                        // For unchanged parts, just advance the line counter
                         lineNumber += lineCount;
                     }
                 });
@@ -154,12 +145,12 @@ export function activate(context: vscode.ExtensionContext) {
                 if (logEntry) {
                     const fullPath = document.uri.fsPath;
                     const timestamp = new Date().toLocaleString();
-                    const finalLog = `### 📄 ${fullPath}\n*Saved at: ${timestamp}*\n\n${logEntry}\n---\n\n`;
+                    const finalLog = `### 📄${fullPath}\nSaved at: ${timestamp} | Changes: +${addedCount} -${removedCount}\n\n${logEntry}---\n\n`;
                     
                     writeToLogFile(finalLog, logFileName);
                 }
             }
-        }
+        } 
         
         lastSavedFileState.set(documentUri, contentAfter);
     });
@@ -182,11 +173,11 @@ function updateStatusBar(): void {
     if (isLoggingEnabled) {
         autoDocStatusBarItem.text = `$(file-text) Auto-Doc: ON`;
         autoDocStatusBarItem.tooltip = "Auto-Doc is active | Click to disable";
-        autoDocStatusBarItem.color = '#32CD32'; // Green
+        autoDocStatusBarItem.color = '#32CD32';
     } else {
         autoDocStatusBarItem.text = `$(file-zip) Auto-Doc: OFF`;
         autoDocStatusBarItem.tooltip = "Auto-Doc is disabled | Click to enable";
-        autoDocStatusBarItem.color = '#FF4500'; // Orange-Red
+        autoDocStatusBarItem.color = '#FF4500';
     }
     autoDocStatusBarItem.show();
 }
@@ -199,9 +190,11 @@ async function writeToLogFile(logEntry: string, logFileName: string) {
         try {
             let existingContentBytes = await vscode.workspace.fs.readFile(logFileUri);
             let existingContent = Buffer.from(existingContentBytes).toString('utf-8');
-            const newContent = logEntry + existingContent;
+            // FIXED: Append new content at the end instead of prepending
+            const newContent = existingContent + logEntry;
             await vscode.workspace.fs.writeFile(logFileUri, Buffer.from(newContent, 'utf-8'));
         } catch (error) {
+            // File doesn't exist, create it with the log entry
             await vscode.workspace.fs.writeFile(logFileUri, Buffer.from(logEntry, 'utf-8'));
         }
     }
