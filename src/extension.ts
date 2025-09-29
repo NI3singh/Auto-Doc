@@ -124,17 +124,24 @@ export function activate(context: vscode.ExtensionContext) {
                 let lineNumber = 1;
                 let addedCount = 0;
                 let removedCount = 0;
+                let firstChangeLineNumber = 0; 
 
                 changes.forEach(part => {
                     const lineCount = (part.value.match(/\n/g) || []).length;
                 
                     if (part.added) {
                         addedCount += lineCount;
+                        if (firstChangeLineNumber === 0) {
+                            firstChangeLineNumber = lineNumber;
+                        }
                         const lines = part.value.replace(/\n$/, '').split('\n');
                         const formattedValue = lines.map(line => `${(lineNumber++).toString().padEnd(5)} ${line}`).join('\n');
                         logEntry += `**[ADDED]**\n\`\`\`\n${formattedValue}\n\`\`\`\n`;
                     } else if (part.removed) {
                         removedCount += lineCount;
+                        if (firstChangeLineNumber === 0) {
+                            firstChangeLineNumber = lineNumber;
+                        }
                         const formattedValue = `(from line ~${lineNumber})\n` + part.value;
                         logEntry += `**[REMOVED]**\n\`\`\`\n${formattedValue}\n\`\`\`\n`;
                     } else {
@@ -145,7 +152,10 @@ export function activate(context: vscode.ExtensionContext) {
                 if (logEntry) {
                     const fullPath = document.uri.fsPath;
                     const timestamp = new Date().toLocaleString();
-                    const finalLog = `### 📄${fullPath}\nSaved at: ${timestamp} | Changes: +${addedCount} -${removedCount}\n\n${logEntry}---\n\n`;
+                    // const fileLink = `[📄${fullPath}](vscode://file/${fullPath}:${firstChangeLineNumber}:1)`;
+                    // const finalLog = `### 📄${fileLink}\nSaved at: ${timestamp} | Changes: +${addedCount} -${removedCount}\n\n${logEntry}---\n\n`;
+                    const fileLink = `📄 [${fullPath}](vscode://file/${fullPath}:${firstChangeLineNumber}:1)`;
+                    const finalLog = `### ${fileLink}\nSaved at: ${timestamp} | Changes: +${addedCount} -${removedCount}\n\n${logEntry}---\n\n`;
                     
                     writeToLogFile(finalLog, logFileName);
                 }
